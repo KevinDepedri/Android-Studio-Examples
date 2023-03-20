@@ -31,6 +31,6 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-//dependencies {
-//    implementation androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
-//}
+dependencies {
+//    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0"
+}
