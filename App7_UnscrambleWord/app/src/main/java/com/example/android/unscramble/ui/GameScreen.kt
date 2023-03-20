@@ -44,10 +44,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.android.unscramble.R
 import com.example.android.unscramble.ui.theme.UnscrambleTheme
-
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 @Composable
-fun GameScreen(modifier: Modifier = Modifier) {
+fun GameScreen(
+    modifier: Modifier = Modifier,
+    gameViewModel: GameViewModel = viewModel()
+) {
+    val gameUiState by gameViewModel.uiState.collectAsState()
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
@@ -56,7 +62,13 @@ fun GameScreen(modifier: Modifier = Modifier) {
     ) {
 
         GameStatus()
-        GameLayout()
+        GameLayout(
+            gameUiState.currentScrambledWord,
+            gameViewModel.userGuess,
+            onUserGuessChanged =  {gameViewModel.updateUserGuess(it) },
+            onKeyboardDone =  {gameUiState.currentScrambledWord}
+
+        )
         Row(
             modifier = modifier
                 .fillMaxWidth()
@@ -108,13 +120,19 @@ fun GameStatus(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun GameLayout(modifier: Modifier = Modifier) {
+fun GameLayout(
+    scrambledWord: String,
+    guessedWord: String,
+    onUserGuessChanged: (String) -> Unit,
+    onKeyboardDone: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(24.dp),
 
         ) {
         Text(
-            text = "scrambleun",
+            text = scrambledWord,
             fontSize = 45.sp,
             modifier = modifier.align(Alignment.CenterHorizontally)
         )
@@ -124,17 +142,17 @@ fun GameLayout(modifier: Modifier = Modifier) {
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
         OutlinedTextField(
-            value = "",
+            value = guessedWord,
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
-            onValueChange = { },
+            onValueChange = onUserGuessChanged,
             label = { Text(stringResource(R.string.enter_your_word)) },
             isError = false,
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions(
-                onDone = { }
+                onDone = { onKeyboardDone() }
             ),
         )
     }
