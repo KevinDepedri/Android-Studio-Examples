@@ -1,5 +1,8 @@
 package com.example.android.unscramble.ui
 
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -12,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
+private const val TAG: String = "GameViewModel"
 /**
  * ViewModel containing the app data and methods to process the data
  */
@@ -70,10 +74,22 @@ class GameViewModel : ViewModel() {
     /*
      * Skip to next word
      */
-    fun skipWord() {
+    fun skipWord(context: Context?) {
         updateGameState(_uiState.value.score)
         // Reset user guess
         updateUserGuess("")
+        val text = if(uiState.value.currentWordCount < MAX_NO_OF_WORDS){
+            "Word skipped!"
+        }else{
+            "You have no more skips left!"
+        }
+
+        if(context == null){
+            Log.w(TAG, "[WARNING]: Context is null! $text")
+            return
+        }
+        Log.d(TAG, text)
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
     }
 
     /*
@@ -107,7 +123,7 @@ class GameViewModel : ViewModel() {
         val tempWord = word.toCharArray()
         // Scramble the word
         tempWord.shuffle()
-        while (String(tempWord).equals(word)) {
+        while (String(tempWord) == word) {
             tempWord.shuffle()
         }
         return String(tempWord)
@@ -116,11 +132,11 @@ class GameViewModel : ViewModel() {
     private fun pickRandomWordAndShuffle(): String {
         // Continue picking up a new random word until you get one that hasn't been used before
         currentWord = allWords.random()
-        if (usedWords.contains(currentWord)) {
-            return pickRandomWordAndShuffle()
+        return if (usedWords.contains(currentWord)) {
+            pickRandomWordAndShuffle()
         } else {
             usedWords.add(currentWord)
-            return shuffleCurrentWord(currentWord)
+            shuffleCurrentWord(currentWord)
         }
     }
 }
