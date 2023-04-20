@@ -17,8 +17,8 @@ using 'rememberSaveable'.
 changes using viewModels and UiState class, which allows to separate the UI layer from the data layer.
 8. Cupcake, app where the user can oreder a set of cupcakes, specifying number, flavour and pick up date. Finally the total is computed and it is sent to another 
 application. Introduction to navController, navHost and intents.
-9. Reply, 
-10. Race Tracker
-11. Mars Photos [work in progress]
-12. Juice tracker, app where the user can save its juices by name, adding a description, a color and a rating. Here the information are saved in memory for the 
+9. Reply, app similar to an email manager, with different sections and supported on different screen sizes. Introduction to layouts and different navigation bars (bottom bar, navigation rail or permanent drawer) which are automatically enabled depending on the device screen size.
+10. Race Tracker, app in which two bar increments with different pace, simulating a run between two people. Introduction to coroutines, coroutineScope and linearProgressIndicator composable.
+11. Mars Photos, app which connects to a server and makes a request to download some Mars images. Introduction to HTTP, Retrofit and REST. [Development in progress]
+12. Juice tracker, app where the user can save its juices by adding a name, a description, a color and a rating. Here the information are saved in memory for the 
 next start of the application. Introduction to the system based on views XML files which was used previously to Jetpack Compose.
