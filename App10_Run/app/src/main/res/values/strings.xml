@@ -15,7 +15,7 @@
   -->
 
 <resources>
-    <string name="app_name">Race tracker</string>
+    <string name="app_name">Race Tracker</string>
     <string name="run_a_race">Run a race</string>
     <string name="pause">Pause</string>
     <string name="start">Start</string>

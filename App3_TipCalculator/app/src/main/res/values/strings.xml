@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">App3_TipCalculator</string>
+    <string name="app_name">Tip Calculator</string>
     <string name="calculate_tip">Calculate Tip</string>
     <string name="bill_amount">Bill amount</string>
     <string name="how_was_the_service">Tip (%)</string>
