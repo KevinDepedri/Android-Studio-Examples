@@ -36,12 +36,31 @@ fun ReplyApp(
     windowSize: WindowWidthSizeClass,
     modifier: Modifier = Modifier
 ) {
+    /**
+     * Define a [viewModel] used to store UI-data for the current app/composable.
+     * [viewModel] SURVIVE CONFIGURATION changes (like screen rotation, etc) and is generally used
+     * to expose data and functions that composables can use.
+     *
+     * NOTICE how we use '= [viewModel()]' to
+     * effectively create the object of type [ReplyViewModel] (which inherits from ViewModel).
+     * */
     val viewModel: ReplyViewModel = viewModel()
+    /**
+     * The UiState is a snapshot of all the data needed by the composable.
+     * It is defined inside the viewModel, and here it is referenced inside the main app code.
+     * The [viewModel] is responsible for updating the UiState based on the events or data changes
+     * that it observes.
+     *
+     * This composable relies on that UiState to display the correct content. If a changes in its
+     * value happens, it TRIGGERS the RECOMPOSITION of the COMPOSABLE.
+     * */
     val replyUiState = viewModel.uiState.collectAsState().value
 
     val navigationType: ReplyNavigationType
     val contentType: ReplyContentType
 
+    // Define, according to screen size, which navigation and content will be used in the HomeScreen
+    // composable below
     when (windowSize) {
         WindowWidthSizeClass.Compact -> {
             navigationType = ReplyNavigationType.BOTTOM_NAVIGATION
@@ -60,6 +79,17 @@ fun ReplyApp(
             contentType = ReplyContentType.LIST_ONLY
         }
     }
+
+
+    /**
+     * Main app composable. It puts together all the smaller composable to build the Home screen.
+     * Such composable requires:
+     * -- navigation and content type define above (used to define the appearance of the app).
+     * -- replayUiState, to observe it and trigger composable recomposition when something
+     *    changes inside the viewModel
+     * -- lambda functions that link viewModel methods to the composable items, allowing to call
+     *    such functions according to the interaction with the app items.
+     * */
     ReplyHomeScreen(
         navigationType = navigationType,
         contentType = contentType,

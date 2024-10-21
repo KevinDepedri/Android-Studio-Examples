@@ -53,6 +53,8 @@ fun ReplyHomeScreen(
     onDetailScreenBackPressed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // Prepare the content of the navigation bar. In this case we set up 4 [NavigationItemContent]
+    // objects, each one with the specific mailbox type, icon and text
     val navigationItemContentList = listOf(
         NavigationItemContent(
             mailboxType = MailboxType.Inbox,
@@ -76,7 +78,15 @@ fun ReplyHomeScreen(
         )
     )
 
+    /**
+     * Show home screen with the above defined navigation bar, or show the details of an email
+     * Fork the implementation according to the display size. In the first case we have a big
+     * display, so we do not need an if/else between ReplyAppContent and ReplyDetailsScreen.
+     * Both can be visualized in parallel. In the second case we need to choose what to visualize
+     */
     if (navigationType == ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER) {
+        // PERMANENT_NAVIGATION_DRAWER is just for very big screen, so we fall in the else case
+        // most of the times
         PermanentNavigationDrawer(
             drawerContent = {
                 PermanentDrawerSheet(Modifier.width(240.dp)) {
@@ -100,7 +110,10 @@ fun ReplyHomeScreen(
             )
         }
     } else {
+        // On smartphone we are in this subcase
         if (replyUiState.isShowingHomepage) {
+            // If we are showing Homepage (i.e., NOT a specific TAB, but just the general tab which
+            // shows more elements), then we need to show the [ReplyAppContent] composable
             ReplyAppContent(
                 navigationType = navigationType,
                 contentType = contentType,
@@ -112,6 +125,8 @@ fun ReplyHomeScreen(
 
             )
         } else {
+            // Otherwise, it means that the user have opened a specific element and we are looking
+            // at is. In this case we need to show the [ReplyDetailsScreen] composable
             ReplyDetailsScreen(
                 replyUiState = replyUiState,
                 onBackPressed = onDetailScreenBackPressed,
@@ -148,19 +163,24 @@ private fun ReplyAppContent(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.inverseOnSurface)
         ) {
-                if (contentType == ReplyContentType.LIST_AND_DETAIL) {
-                    ReplyListAndDetailContent(
-                        replyUiState = replyUiState,
-                        onEmailCardPressed = onEmailCardPressed,
-                        modifier = Modifier.weight(1f)
-                    )
-                } else {
-                    ReplyListOnlyContent(
-                        replyUiState = replyUiState,
-                        onEmailCardPressed = onEmailCardPressed,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
+            // With a big screen we show both the list of emails on the left and the emails
+            // detail on the right, so we load 'ReplyListAndDetailContent'
+            if (contentType == ReplyContentType.LIST_AND_DETAIL) {
+                ReplyListAndDetailContent(
+                    replyUiState = replyUiState,
+                    onEmailCardPressed = onEmailCardPressed,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            // Otherwise, we just show show the list of emails, and tapping on one will lead
+            // to the interface with the email data
+            else {
+                ReplyListOnlyContent(
+                    replyUiState = replyUiState,
+                    onEmailCardPressed = onEmailCardPressed,
+                    modifier = Modifier.weight(1f)
+                )
+            }
             AnimatedVisibility(visible = navigationType == ReplyNavigationType.BOTTOM_NAVIGATION) {
                 ReplyBottomNavigationBar(
                     currentTab = replyUiState.currentMailbox,

@@ -35,7 +35,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Bridge between the Kotlin code and the Visual Element of Jetpack Compose (mandatory to
+        // work on composable elements)
         setContent {
+            // App theme
             ReplyTheme {
                 val windowSize = calculateWindowSizeClass(activity = this)
                 ReplyApp(windowSize.widthSizeClass)
@@ -44,6 +47,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+// Previews are useful to see how the composable looks in different configurations. They are quick
+// to render and they allow the check a specific composable in isolated settings.
 @Preview(showBackground = true)
 @Composable
 fun ReplyAppPreview() {
